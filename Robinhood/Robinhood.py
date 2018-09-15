@@ -63,7 +63,7 @@ class Robinhood:
             "Content-Type": "application/x-www-form-urlencoded; charset=utf-8",
             "X-Robinhood-API-Version": "1.0.0",
             "Connection": "keep-alive",
-            "User-Agent": "Robinhood/823 (iPhone; iOS 7.1.2; Scale/2.00)"
+            "User-Agent": "Robinhood/823 (iPhone; iOS 7.1.2; Scale/2.00)",
         }
         self.session.headers = self.headers
         self.auth_method = self.login_prompt
@@ -104,7 +104,9 @@ class Robinhood:
         self.password = password
         payload = {
             'password': self.password,
-            'username': self.username
+            'username': self.username,
+            'client_id': 'c82SH0WZOsabOXGP2sxqcj34FxkvfnWRZBKlBjFS',
+            'grant_type': 'password'
         }
 
         if mfa_code:
@@ -120,9 +122,9 @@ class Robinhood:
         if 'mfa_required' in data.keys():           # pragma: no cover
             raise RH_exception.TwoFactorRequired()  # requires a second call to enable 2FA
 
-        if 'token' in data.keys():
-            self.auth_token = data['token']
-            self.headers['Authorization'] = 'Token ' + self.auth_token
+        if 'access_token' in data.keys():
+            self.auth_token = data['access_token']
+            self.headers['Authorization'] = 'Bearer ' + self.auth_token
             return True
 
         return False
